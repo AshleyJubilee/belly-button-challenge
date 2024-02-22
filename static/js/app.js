@@ -61,11 +61,15 @@ function plotData(jsonData, ID) {
     let demoChart = []
 
     for (let x in metadata) {
-        demoChart.push(x + ": " + metadata[x])
+        demoChart.push(`${x}: ${metadata[x]}\n`)
     }
 
-    let cardBody = d3.selectAll("sample-metadata").append('p');
-    cardBody.text(demoChart)
+    for (let x in demoChart) {
+        let cardBody = d3.selectAll("#sample-metadata.card-body").append('p');
+        cardBody.text(demoChart[x])
+    }
+    console.log(demoChart)
+
 
 
 }
