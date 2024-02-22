@@ -1,24 +1,22 @@
-// Retrive json Data
+// Init json url and variable
 const bellyURL = 'https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json';
 let jsonData
 
-
+// Plot first entry as default
 d3.json(bellyURL).then(function(data) {
-    console.log(data);
-
     plotData(data, data.names[0]);
 
     jsonData = data;
 
+    // Add each id to dropdown menu
     for (let x in data.names) {
         let dropdownAppend = d3.select("#selDataset").append('option')
         dropdownAppend.text(data.names[x])
-    }
+    };
 
 });
 
-d3.selectAll("#selDataset").on("change", updatePlotly);
-
+// General plot function, passes json data and specific ID
 function plotData(jsonData, ID) {
 
     let metadata = '';
@@ -50,6 +48,7 @@ function plotData(jsonData, ID) {
 
     Plotly.react("bar", bar);
 
+
     // Create Bubble Chart
     bubble = [{
         x: samples.otu_ids,
@@ -64,32 +63,26 @@ function plotData(jsonData, ID) {
 
     Plotly.react('bubble', bubble);
 
+
     // Create Demographic Chart
 
-    let demoChart = [];
-
-
-    for (let x in metadata) {
-        demoChart.push(`${x}: ${metadata[x]}\n`);
-    };
-
-
+    // Select Dropdown menu and clear previous data
     let cardBody = d3.select("#sample-metadata.card-body");
     cardBody.text('')
 
-    for (let x in demoChart) {
-        cardBody.append('p').text(demoChart[x]);
+    // Adds new data for each metadata entry
+    for (let x in metadata) {
+        cardBody.append('p').text(`${x}: ${metadata[x]}`);
     };
-}
+};
 
+// Run general plotly function on new ID
+d3.selectAll("#selDataset").on("change", updatePlotly);
 
 function updatePlotly() {
 
     let dropdownMenu = d3.select("#selDataset")
-
     let subjectID = dropdownMenu.property("value");
     
-
-
     plotData(jsonData, subjectID);
-}
+};
