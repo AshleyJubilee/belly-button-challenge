@@ -1,11 +1,19 @@
 // Retrive json Data
 const bellyURL = 'https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json';
+let jsonData
 
 
 d3.json(bellyURL).then(function(data) {
     console.log(data);
 
     plotData(data, data.names[0]);
+
+    jsonData = data;
+
+    for (let x in data.names) {
+        let dropdownAppend = d3.select("#selDataset").append('option')
+        dropdownAppend.text(data.names[x])
+    }
 
 });
 
@@ -20,15 +28,15 @@ function plotData(jsonData, ID) {
     for (let subject in jsonData.metadata) {
         if (jsonData.metadata[subject].id == ID) {
             metadata = jsonData.metadata[subject];
-        }
-    }
+        };
+    };
 
     // Find sample data for submitted ID
     for (let subject in jsonData.samples) {
         if (jsonData.samples[subject].id == ID) {
             samples = jsonData.samples[subject];
-        }
-    }
+        };
+    };
 
 
     // Create Bar Chart
@@ -58,25 +66,30 @@ function plotData(jsonData, ID) {
 
     // Create Demographic Chart
 
-    let demoChart = []
+    let demoChart = [];
+
 
     for (let x in metadata) {
-        demoChart.push(`${x}: ${metadata[x]}\n`)
-    }
+        demoChart.push(`${x}: ${metadata[x]}\n`);
+    };
+
+
+    let cardBody = d3.select("#sample-metadata.card-body");
+    cardBody.text('')
 
     for (let x in demoChart) {
-        let cardBody = d3.selectAll("#sample-metadata.card-body").append('p');
-        cardBody.text(demoChart[x])
-    }
-    console.log(demoChart)
-
-
-
+        cardBody.append('p').text(demoChart[x]);
+    };
 }
 
 
 function updatePlotly() {
-    let dropdownMenu = d3.select("#selDataset");
+
+    let dropdownMenu = d3.select("#selDataset")
+
     let subjectID = dropdownMenu.property("value");
-    plotData(data, subjectID);
+    
+
+
+    plotData(jsonData, subjectID);
 }
