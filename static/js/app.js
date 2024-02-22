@@ -13,8 +13,8 @@ d3.selectAll("#selDataset").on("change", updatePlotly);
 
 function plotData(jsonData, ID) {
 
-    let metadata = ''
-    let samples = ''
+    let metadata = '';
+    let samples = '';
 
     // Find metadata for submitted ID
     for (let subject in jsonData.metadata) {
@@ -38,20 +38,41 @@ function plotData(jsonData, ID) {
        type: 'bar',
        text: (samples.otu_labels.slice(0, 10)).reverse(),
        orientation: 'h',
-    }]
+    }];
 
-    Plotly.react("bar", bar)
+    Plotly.react("bar", bar);
 
     // Create Bubble Chart
     bubble = [{
+        x: samples.otu_ids,
+        y: samples.sample_values,
+        mode: 'markers', 
+        marker: {
+            size: samples.sample_values,
+            color: samples.otu_ids
+        },
+        text: samples.otu_labels
+    }];
 
-    }]
+    Plotly.react('bubble', bubble);
 
-    Plotly.react('bubble', bubble)
+    // Create Demographic Chart
+
+    let demoChart = []
+
+    for (let x in metadata) {
+        demoChart.push(x + ": " + metadata[x])
+    }
+
+    let cardBody = d3.selectAll("sample-metadata").append('p');
+    cardBody.text(demoChart)
+
+
 }
+
 
 function updatePlotly() {
     let dropdownMenu = d3.select("#selDataset");
     let subjectID = dropdownMenu.property("value");
-    plotData(data, subjectID)
+    plotData(data, subjectID);
 }
